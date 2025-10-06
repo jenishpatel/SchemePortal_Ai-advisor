@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheme Discovery & AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="antialiased text-slate-700">
+
+    <!-- App Container -->
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-md sticky top-0 z-50">
+            <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="#" class="flex-shrink-0 font-bold text-xl text-indigo-600 flex items-center">
+                           <i class="fas fa-landmark mr-2"></i> SchemeFinder
+                        </a>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#explore" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 border-b-2 border-transparent">Explore</a>
+                            <a href="#my-schemes" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 border-b-2 border-transparent">My Schemes</a>
+                            <a href="#ai-advisor" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 border-b-2 border-transparent">AI Advisor</a>
+                            <a href="#compare" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 border-b-2 border-transparent">Compare (<span id="compare-count">0</span>)</a>
+                            <a href="#news" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 border-b-2 border-transparent">News</a>
+                            <a href="admin.html" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-800 border-b-2 border-transparent">Admin</a>
+                        </div>
+                    </div>
+                    <div class="md:hidden">
+                         <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <div id="mobile-menu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="#explore" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">Explore</a>
+                    <a href="#my-schemes" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">My Schemes</a>
+                    <a href="#ai-advisor" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">AI Advisor</a>
+                    <a href="#compare" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">Compare (<span id="mobile-compare-count">0</span>)</a>
+                    <a href="#news" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">News</a>
+                    <a href="admin.html" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-800">Admin</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 main-content">
+            
+            <!-- Explore Schemes Page -->
+            <div id="page-explore" class="active">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <h1 class="text-2xl font-bold mb-4">Explore Schemes</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <input id="search-input" type="text" placeholder="Search by name or keyword..." class="p-2 border rounded-md w-full col-span-1 md:col-span-2">
+                        <select id="filter-sector" class="p-2 border rounded-md w-full"></select>
+                        <select id="filter-ministry" class="p-2 border rounded-md w-full"></select>
+                        <select id="filter-state" class="p-2 border rounded-md w-full"></select>
+                         <button id="reset-filters" class="p-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors col-span-1">Reset Filters</button>
+                    </div>
+                </div>
+                
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button class="browse-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600" data-tab="all">All Schemes</button>
+                        <button class="browse-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="state">By State/UT</button>
+                        <button class="browse-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="ministry">By Ministry</button>
+                        <button class="browse-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="sector">By Sector</button>
+                    </nav>
+                </div>
+
+                <div id="schemes-container">
+                    <!-- Schemes will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Scheme Detail Page -->
+            <div id="page-scheme-detail">
+                <!-- Detailed content will be rendered here -->
+            </div>
+
+            <!-- My Schemes Page -->
+            <div id="page-my-schemes">
+                 <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <h1 class="text-2xl font-bold mb-4">My Saved Schemes</h1>
+                    <p>Schemes you save will appear here for easy access.</p>
+                 </div>
+                 <div id="my-schemes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Saved schemes rendered here -->
+                 </div>
+            </div>
+            
+            <!-- AI Advisor Page -->
+            <div id="page-ai-advisor">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h1 class="text-2xl font-bold mb-2">Personalized AI Recommendations</h1>
+                        <p class="mb-4 text-gray-600">Fill out your profile, and our AI will suggest schemes tailored to your needs.</p>
+                        <form id="ai-advisor-form" class="space-y-4">
+                             <div>
+                                <label for="ai-situation" class="block text-sm font-medium text-gray-700">Describe your situation (e.g., student, farmer, small business owner)</label>
+                                <textarea id="ai-situation" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., I am a farmer in Maharashtra with a small land holding..."></textarea>
+                            </div>
+                            <div>
+                                <label for="ai-sector" class="block text-sm font-medium text-gray-700">Sector of Interest</label>
+                                <select id="ai-sector" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></select>
+                            </div>
+                            <div>
+                                <label for="ai-state" class="block text-sm font-medium text-gray-700">Your State/UT</label>
+                                <select id="ai-state" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></select>
+                            </div>
+                             <div>
+                                <label for="ai-age" class="block text-sm font-medium text-gray-700">Age</label>
+                                <input type="number" id="ai-age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            </div>
+                            <button type="submit" class="w-full btn-primary font-bold py-2 px-4 rounded-md">Get Recommendations</button>
+                        </form>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-bold mb-4">AI Recommendations</h2>
+                        <div id="ai-recommendations-result" class="space-y-4">
+                            <p class="text-gray-500">Your personalized scheme recommendations will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compare Schemes Page -->
+            <div id="page-compare">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <h1 class="text-2xl font-bold mb-4">Compare Schemes</h1>
+                    <p id="compare-instructions">Select 2 to 4 schemes from the 'Explore' page to compare them side-by-side.</p>
+                </div>
+                <div id="comparison-container" class="overflow-x-auto">
+                    <!-- Comparison table will be rendered here -->
+                </div>
+
+                <div id="ai-compare-section" class="mt-8 bg-white p-6 rounded-lg shadow-sm hidden">
+                    <h2 class="text-2xl font-bold mb-4">✨ AI Comparison Analysis</h2>
+                    <p class="text-gray-600 mb-4">Describe your situation, and our AI will analyze the selected schemes to recommend the best one for you.</p>
+                    <div>
+                        <label for="user-persona" class="block text-sm font-medium text-gray-700">Describe yourself (e.g., age, occupation, state, goals)</label>
+                        <textarea id="user-persona" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., I am a 22-year-old student in Tamil Nadu..."></textarea>
+                    </div>
+                    <button id="get-ai-comparison" class="mt-4 w-full md:w-auto btn-primary font-bold py-2 px-4 rounded-md">Get AI Analysis</button>
+                    <div id="ai-comparison-result" class="mt-6 p-4 bg-gray-50 rounded-md border hidden">
+                        <!-- AI result will be shown here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Page -->
+            <div id="page-news">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <h1 class="text-2xl font-bold mb-4">News & Updates</h1>
+                     <p>Latest news and announcements related to government schemes.</p>
+                </div>
+                <div id="news-container" class="space-y-6">
+                    <!-- News items will be rendered here -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Chatbot -->
+    <div id="chatbot-container">
+        <div id="chatbot-widget" class="bg-white rounded-lg w-80 h-96 shadow-xl flex flex-col hidden">
+            <div class="bg-indigo-600 text-white p-3 rounded-t-lg flex justify-between items-center">
+                <h3 class="font-semibold">Scheme AI Assistant</h3>
+                <button id="close-chatbot" class="text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div id="chatbot-messages" class="flex-1 p-3 overflow-y-auto bg-gray-50"></div>
+            <div class="p-2 border-t">
+                <form id="chatbot-form" class="flex">
+                    <input type="text" id="chatbot-input" placeholder="Ask about schemes..." class="flex-1 p-2 border rounded-l-md text-sm">
+                    <button type="submit" class="bg-indigo-600 text-white p-2 rounded-r-md"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <button id="open-chatbot" class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
+            <i class="fas fa-comments text-2xl"></i>
+        </button>
+    </div>
+    
+    <!-- Modal for AI Summary / Elaboration -->
+    <div id="ai-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="ai-modal-title" class="text-xl font-bold">AI Generated Content</h2>
+                <button id="close-ai-modal" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </div>
+            <div id="ai-modal-content" class="text-gray-600 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+    
+    <!-- Modal for Eligibility Calculator -->
+    <div id="eligibility-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Eligibility Calculator</h2>
+                <button id="close-eligibility-modal" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </div>
+            <div id="eligibility-form-container"></div>
+            <div id="eligibility-result" class="mt-4 p-4 rounded-md hidden"></div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
+

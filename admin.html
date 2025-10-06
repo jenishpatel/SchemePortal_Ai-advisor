@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Scheme Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="antialiased text-slate-800">
+
+    <div id="app" class="min-h-screen">
+        <!-- Login Section -->
+        <div id="admin-auth" class="fixed inset-0 z-50 bg-gray-100 flex flex-col items-center justify-center p-4">
+            <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl">
+                <div class="flex items-center justify-center mb-6">
+                     <i class="fas fa-landmark text-3xl text-indigo-600 mr-3"></i>
+                     <h1 class="text-2xl font-bold text-center">Admin Portal Login</h1>
+                </div>
+                <input type="password" id="admin-password" placeholder="Enter admin password" class="w-full p-3 border rounded-md shadow-sm mb-4">
+                <button id="admin-login-btn" class="w-full btn-primary font-bold py-3 rounded-md">Login</button>
+                <div id="admin-auth-msg" class="mt-4 text-center text-red-500 text-sm"></div>
+                <div class="mt-6 text-center"><a href="index.html" class="text-sm text-indigo-600 hover:underline">&larr; Back to Main Site</a></div>
+            </div>
+        </div>
+
+        <!-- Main Admin Content -->
+        <div id="admin-content" class="w-full" style="display:none;">
+            <header class="bg-white shadow-md sticky top-0 z-40">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                    <h1 class="text-xl font-bold flex items-center"><i class="fas fa-landmark text-2xl text-indigo-600 mr-2"></i>Admin Panel</h1>
+                    <button id="admin-logout-btn" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold">Logout</button>
+                </div>
+            </header>
+            
+            <div class="flex">
+                <aside class="w-64 bg-white h-screen sticky top-16 p-4 shadow-lg">
+                    <nav class="flex flex-col space-y-2">
+                        <a href="#dashboard" class="admin-nav-link text-gray-700 hover:bg-gray-100 font-semibold p-3 rounded-lg flex items-center"><i class="fas fa-tachometer-alt w-6 mr-2"></i> Dashboard</a>
+                        <a href="#schemes" class="admin-nav-link text-gray-700 hover:bg-gray-100 font-semibold p-3 rounded-lg flex items-center"><i class="fas fa-tasks w-6 mr-2"></i> Schemes</a>
+                        <a href="#news" class="admin-nav-link text-gray-700 hover:bg-gray-100 font-semibold p-3 rounded-lg flex items-center"><i class="fas fa-newspaper w-6 mr-2"></i> News</a>
+                        <a href="#settings" class="admin-nav-link text-gray-700 hover:bg-gray-100 font-semibold p-3 rounded-lg flex items-center"><i class="fas fa-cog w-6 mr-2"></i> Settings</a>
+                    </nav>
+                </aside>
+
+                <main class="flex-1 p-8">
+                    <!-- Dashboard Page -->
+                    <div id="page-dashboard" class="admin-page">
+                        <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-500">Total Schemes</h3><p id="stats-total-schemes" class="text-4xl font-bold text-indigo-600 mt-2">0</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-500">Total News Articles</h3><p id="stats-total-news" class="text-4xl font-bold text-indigo-600 mt-2">0</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-500">Most Popular Schemes</h3><div id="stats-popular-schemes" class="mt-2 space-y-2"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Schemes Page -->
+                    <div id="page-schemes" class="admin-page">
+                        <h2 class="text-3xl font-bold mb-6">Scheme Management</h2>
+                        
+                        <!-- Import/Export Section -->
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                            <h3 class="text-2xl font-semibold mb-4">Data Management</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                                <div>
+                                    <label for="import-file" class="block text-sm font-medium text-gray-700">Import Schemes (JSON)</label>
+                                    <input type="file" id="import-file" accept=".json" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                </div>
+                                <div class="flex space-x-2">
+                                     <button id="import-btn" class="btn-primary py-2 px-4 rounded-md flex items-center"><i class="fas fa-upload mr-2"></i> Import Data</button>
+                                     <button id="export-btn" class="btn-secondary py-2 px-4 rounded-md flex items-center"><i class="fas fa-download mr-2"></i> Export Data</button>
+                                </div>
+                            </div>
+                            <div id="import-status" class="mt-4 text-sm h-5"></div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                            <h3 id="form-title" class="text-2xl font-semibold mb-4">Add New Scheme</h3>
+                            
+                            <!-- AI Scheme Fetcher -->
+                            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg mb-6">
+                                <h4 class="font-bold text-lg">🚀 AI Scheme Fetcher</h4>
+                                <p class="text-sm text-gray-600 mb-2">Enter the name of a scheme and let AI fill in the details for you.</p>
+                                <div class="flex items-center space-x-2">
+                                    <input type="text" id="ai-scheme-name-input" placeholder="e.g., Pradhan Mantri Fasal Bima Yojana" class="flex-grow p-2 rounded-md border-gray-300">
+                                    <button id="fetch-ai-details-btn" class="btn-primary py-2 px-4 rounded-md flex items-center"><i class="fas fa-magic mr-2"></i> Fetch Details with AI</button>
+                                </div>
+                                <div id="ai-fetch-status" class="mt-2 text-sm text-gray-700 h-6"></div>
+                            </div>
+                            
+                            <form id="admin-scheme-form" class="space-y-6">
+                                <input type="hidden" id="admin-scheme-id">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="col-span-1 md:col-span-2"><label class="block text-sm font-medium">Scheme Name</label><input type="text" id="admin-scheme-name" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50" required></div>
+                                    <div><label class="block text-sm font-medium">Sector</label><input type="text" id="admin-scheme-sector" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50" required></div>
+                                    <div><label class="block text-sm font-medium">Ministry</label><input type="text" id="admin-scheme-ministry" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                    <div><label class="block text-sm font-medium">State (or "All")</label><input type="text" id="admin-scheme-state" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50" required></div>
+                                    <div><label class="block text-sm font-medium">Gender</label><select id="admin-scheme-gender" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"><option>Any</option><option>Male</option><option>Female</option></select></div>
+                                    <div><label class="block text-sm font-medium">Caste</label><select id="admin-scheme-caste" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"><option>Any</option><option>General</option><option>SC</option><option>ST</option><option>OBC</option></select></div>
+                                    <div><label class="block text-sm font-medium">Residence</label><select id="admin-scheme-residence" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"><option>Any</option><option>Rural</option><option>Urban</option></select></div>
+                                    <div><label class="block text-sm font-medium">Occupation</label><input type="text" id="admin-scheme-occupation" placeholder="e.g., Farmer" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                    <div class="flex items-center gap-4">
+                                        <div><label class="block text-sm font-medium">Min Age</label><input type="number" id="admin-scheme-age-min" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                        <div><label class="block text-sm font-medium">Max Age</label><input type="number" id="admin-scheme-age-max" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                    </div>
+                                    <div class="col-span-1 md:col-span-2"><label class="block text-sm font-medium">Official Link</label><input type="url" id="admin-scheme-link" placeholder="https://example.gov.in" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                </div>
+
+                                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 border-t pt-4">
+                                    <label class="flex items-center"><input type="checkbox" id="admin-scheme-is-minority" class="h-4 w-4 rounded bg-gray-50"> <span class="ml-2 text-sm">Minority</span></label>
+                                    <label class="flex items-center"><input type="checkbox" id="admin-scheme-is-differently-abled" class="h-4 w-4 rounded bg-gray-50"> <span class="ml-2 text-sm">Differently Abled</span></label>
+                                    <label class="flex items-center"><input type="checkbox" id="admin-scheme-is-bpl" class="h-4 w-4 rounded bg-gray-50"> <span class="ml-2 text-sm">BPL</span></label>
+                                    <label class="flex items-center"><input type="checkbox" id="admin-scheme-is-student" class="h-4 w-4 rounded bg-gray-50"> <span class="ml-2 text-sm">Student</span></label>
+                                </div>
+                                
+                                <div><label class="block text-sm font-medium">Description</label><textarea id="admin-scheme-description" rows="3" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50" required></textarea></div>
+                                <div><label class="block text-sm font-medium">Benefits (comma-separated)</label><input type="text" id="admin-scheme-benefits" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+                                <div><label class="block text-sm font-medium">Application Process (Step-by-step)</label><textarea id="admin-scheme-application-process" rows="4" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50" placeholder="1. Visit...&#10;2. Register..."></textarea></div>
+                                <div><label class="block text-sm font-medium">Documents Required (comma-separated)</label><input type="text" id="admin-scheme-documents" class="mt-1 block w-full p-2 rounded-md border-gray-300 bg-gray-50"></div>
+
+                                <div class="md:col-span-2 flex justify-end space-x-4"><button type="button" id="admin-cancel-edit" class="btn-secondary py-2 px-5 rounded-md" style="display:none;">Cancel</button><button type="submit" class="btn-primary py-2 px-5 rounded-md">Save Scheme</button></div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-semibold mb-4">All Schemes</h3><div class="overflow-x-auto border rounded-lg"><table class="min-w-full text-sm divide-y" id="admin-schemes-table"><thead class="bg-gray-100"><tr><th class="p-3 text-left">Name</th><th class="p-3 text-left">Sector</th><th class="p-3 text-left">State</th><th class="p-3 text-left">Actions</th></tr></thead><tbody class="bg-white divide-y"></tbody></table></div></div>
+                    </div>
+
+                    <!-- News Page -->
+                    <div id="page-news" class="admin-page">
+                        <h2 class="text-3xl font-bold mb-6">News Management</h2>
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                            <h3 id="news-form-title" class="text-2xl font-semibold mb-4">Add News Article</h3>
+                            <form id="admin-news-form" class="space-y-4">
+                                <input type="hidden" id="admin-news-id">
+                                <div><label class="block text-sm font-medium">Date</label><input type="date" id="admin-news-date" class="mt-1 block w-full p-2 rounded-md border-gray-300" required></div>
+                                <div><label class="block text-sm font-medium">Title</label><input type="text" id="admin-news-title" class="mt-1 block w-full p-2 rounded-md border-gray-300" required></div>
+                                <div><label class="block text-sm font-medium">Content</label><textarea id="admin-news-content" rows="4" class="mt-1 block w-full p-2 rounded-md border-gray-300" required></textarea></div>
+                                <div class="flex justify-end space-x-4"><button type="button" id="admin-cancel-news-edit" class="btn-secondary py-2 px-5 rounded-md" style="display:none;">Cancel</button><button type="submit" class="btn-primary py-2 px-5 rounded-md">Save Article</button></div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-semibold mb-4">All News Articles</h3><div class="overflow-x-auto border rounded-lg"><table class="min-w-full text-sm divide-y" id="admin-news-table"><thead class="bg-gray-100"><tr><th class="p-3 text-left">Date</th><th class="p-3 text-left">Title</th><th class="p-3 text-left">Actions</th></tr></thead><tbody class="bg-white divide-y"></tbody></table></div></div>
+                    </div>
+                                      
+                    <!-- Settings Page -->
+                    <div id="page-settings" class="admin-page">
+                        <h2 class="text-3xl font-bold mb-6">Settings</h2>
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                             <h3 class="text-2xl font-semibold mb-2">Chatbot Configuration</h3>
+                             <p class="text-gray-500 mb-4">Control the AI chatbot's personality and instructions. This "system prompt" guides the AI's responses.</p>
+                             <form id="settings-form"><textarea id="chatbot-prompt" rows="8" class="mt-1 block w-full p-2 rounded-md border-gray-300 font-mono text-sm"></textarea><div class="flex justify-end mt-4"><button type="submit" class="btn-primary py-2 px-5 rounded-md">Save Settings</button></div></form>
+                         </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
+
